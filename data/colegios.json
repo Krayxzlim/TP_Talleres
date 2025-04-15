@@ -1,0 +1,14 @@
+[
+    {
+        "nombre": "1",
+        "direccion": "2",
+        "primario": true,
+        "secundario": false
+    },
+    {
+        "nombre": "2",
+        "direccion": "14",
+        "primario": false,
+        "secundario": true
+    }
+]

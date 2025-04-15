@@ -1,0 +1,14 @@
+[
+    {
+        "usuario": "luciano",
+        "correo": "asdq@gsa.com",
+        "contrase\u00f1a": "asd123",
+        "rol": "tallerista"
+    },
+    {
+        "usuario": "pepe",
+        "correo": "admin@talleres.com",
+        "contrase\u00f1a": "123asd",
+        "rol": "tallerista"
+    }
+]
