@@ -1,1 +1,45 @@
-[]
+[
+    {
+        "colegio": "Escuela Primaria San Mart\u00edn",
+        "taller": "Cuidado del Entorno",
+        "fecha": "2025-07-03",
+        "hora": "10:33",
+        "talleristas": [
+            "luciano",
+            "sofia"
+        ]
+    },
+    {
+        "colegio": "Colegio Integral Buenos Aires",
+        "taller": "Cuidado del Entorno",
+        "fecha": "2025-06-06",
+        "hora": "14:33",
+        "talleristas": [
+            "juanperez",
+            "jose"
+        ]
+    },
+    {
+        "colegio": "Escuela Rural N\u00ba 32",
+        "taller": "Ciencia en Acci\u00f3n",
+        "fecha": "2025-05-09",
+        "hora": "09:20",
+        "talleristas": [
+            "juanperez"
+        ]
+    },
+    {
+        "colegio": "Colegio Biling\u00fce El Faro",
+        "taller": "Creatividad Digital",
+        "fecha": "2025-06-04",
+        "hora": "11:20",
+        "talleristas": []
+    },
+    {
+        "colegio": "Instituto Nuestra Se\u00f1ora del Carmen",
+        "taller": "Creatividad Digital",
+        "fecha": "2025-07-17",
+        "hora": "09:00",
+        "talleristas": []
+    }
+]
