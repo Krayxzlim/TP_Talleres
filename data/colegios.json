@@ -1,14 +1,50 @@
 [
     {
-        "nombre": "1",
-        "direccion": "2",
+        "nombre": "Escuela Primaria San Martín",
+        "direccion": "Av. Belgrano 1234, CABA",
         "primario": true,
         "secundario": false
     },
     {
-        "nombre": "2",
-        "direccion": "14",
+        "nombre": "Colegio Secundario Mariano Moreno",
+        "direccion": "Calle Mitre 789, Rosario",
         "primario": false,
         "secundario": true
+    },
+    {
+        "nombre": "Instituto Nuestra Señora del Carmen",
+        "direccion": "Av. Colón 4321, Córdoba",
+        "primario": true,
+        "secundario": true
+    },
+    {
+        "nombre": "Escuela N° 15 Domingo Faustino Sarmiento",
+        "direccion": "Ruta 8 km 45, San Antonio de Areco",
+        "primario": true,
+        "secundario": false
+    },
+    {
+        "nombre": "Colegio Integral Buenos Aires",
+        "direccion": "Pasaje Rivarola 550, CABA",
+        "primario": true,
+        "secundario": true
+    },
+    {
+        "nombre": "Instituto Técnico José de San Martín",
+        "direccion": "Bv. Oroño 2100, Rosario",
+        "primario": false,
+        "secundario": true
+    },
+    {
+        "nombre": "Colegio Bilingüe El Faro",
+        "direccion": "Camino del Bajo 987, San Isidro",
+        "primario": true,
+        "secundario": true
+    },
+    {
+        "nombre": "Escuela Rural Nº 32",
+        "direccion": "Paraje Los Robles, La Pampa",
+        "primario": true,
+        "secundario": false
     }
 ]
