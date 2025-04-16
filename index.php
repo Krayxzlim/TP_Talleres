@@ -3,57 +3,35 @@ session_start();
 include("includes/header.php");
 include("includes/nav.php");
 
+// carga las visitas de agenda en caso de que haya y las muyestra en "listado de talleres agendados"
 $archivo = "data/agenda.json";
 $agenda = file_exists($archivo) ? json_decode(file_get_contents($archivo), true) : [];
 
-// Cargar colegios desde JSON
+// carga los colegios en caso de que haya para mostrar en el desplegable
 $colegios_json = "data/colegios.json";
 $colegios_lista = file_exists($colegios_json) ? json_decode(file_get_contents($colegios_json), true) : [];
 
-// Talleres predefinidos
+// array de talleres que aparecen en el desplegable para asignar a cada visita
 $talleres_opciones = [
     "Creatividad Digital",
     "Cuidado del Entorno",
     "Ciencia en Acción"
 ];
 
-// Cargar usuarios tipo tallerista
+// carga los usuarios que haya registrados y filtra los que tengan rol tallerista para mostrar en el desplegable de "acciones" para asignar a cada visita
+// (acordate de crear acciones para usuarios administrador!)
 $usuarios_file = "data/usuarios_registrados.json";
 $usuarios_all = file_exists($usuarios_file) ? json_decode(file_get_contents($usuarios_file), true) : [];
 $talleristas_disponibles = array_filter($usuarios_all, fn($u) => $u['rol'] === 'tallerista');
 
+// controles (notificacion/bool para edicion de taller/identifica el taller en edicion)
 $mensaje = "";
 $editando = false;
 $edit_id = -1;
 
-// Eliminar
-if (isset($_POST['eliminar']) && isset($_SESSION['usuario']) && $_SESSION['usuario']['rol'] === 'tallerista') {
-    unset($agenda[$_POST['eliminar']]);
-    $agenda = array_values($agenda);
-    file_put_contents($archivo, json_encode($agenda, JSON_PRETTY_PRINT));
-    header("Location: index.php");
-    exit;
-}
 
-// Editar
-if (isset($_POST['editar']) && isset($_SESSION['usuario']) && $_SESSION['usuario']['rol'] === 'tallerista') {
-    $edit_id = $_POST['editar'];
-    $editando = true;
-}
-
-// Guardar edición
-if (isset($_POST['guardar_edicion']) && isset($_SESSION['usuario']) && $_SESSION['usuario']['rol'] === 'tallerista') {
-    $id = $_POST['id'];
-    $agenda[$id]["colegio"] = $_POST["colegio"];
-    $agenda[$id]["taller"] = $_POST["taller"];
-    $agenda[$id]["fecha"] = $_POST["fecha"];
-    $agenda[$id]["hora"] = $_POST["hora"];
-    file_put_contents($archivo, json_encode($agenda, JSON_PRETTY_PRINT));
-    $mensaje = "Taller editado correctamente.";
-    $editando = false;
-}
-
-// Agregar
+// CRUD
+// crea
 if (isset($_POST['agregar']) && isset($_SESSION['usuario']) && $_SESSION['usuario']['rol'] === 'tallerista') {
     $nuevo = [
         "colegio" => $_POST["colegio"],
@@ -67,7 +45,34 @@ if (isset($_POST['agregar']) && isset($_SESSION['usuario']) && $_SESSION['usuari
     $mensaje = "Taller agendado correctamente.";
 }
 
-// Asignar tallerista
+// flagea para actualizar
+if (isset($_POST['editar']) && isset($_SESSION['usuario']) && $_SESSION['usuario']['rol'] === 'tallerista') {
+    $edit_id = $_POST['editar'];
+    $editando = true;
+}
+
+// guarda actualizacion
+if (isset($_POST['guardar_edicion']) && isset($_SESSION['usuario']) && $_SESSION['usuario']['rol'] === 'tallerista') {
+    $id = $_POST['id'];
+    $agenda[$id]["colegio"] = $_POST["colegio"];
+    $agenda[$id]["taller"] = $_POST["taller"];
+    $agenda[$id]["fecha"] = $_POST["fecha"];
+    $agenda[$id]["hora"] = $_POST["hora"];
+    file_put_contents($archivo, json_encode($agenda, JSON_PRETTY_PRINT));
+    $mensaje = "Taller editado correctamente.";
+    $editando = false;
+}
+
+// borra
+if (isset($_POST['eliminar']) && isset($_SESSION['usuario']) && $_SESSION['usuario']['rol'] === 'tallerista') {
+    unset($agenda[$_POST['eliminar']]);
+    $agenda = array_values($agenda);
+    file_put_contents($archivo, json_encode($agenda, JSON_PRETTY_PRINT));
+    header("Location: index.php");
+    exit;
+}
+
+// asigna tallerista validando que se puedan asignar solo 2 talleristas distintos
 if (isset($_POST['asignar_tallerista']) && isset($_SESSION['usuario']) && $_SESSION['usuario']['rol'] === 'tallerista') {
     $id = $_POST['taller_id'];
     $nuevo_tallerista = $_POST['nuevo_tallerista'];
@@ -88,9 +93,11 @@ if (isset($_POST['asignar_tallerista']) && isset($_SESSION['usuario']) && $_SESS
 }
 ?>
 
+<!--HTML-->
+
 <h2 class="text-center my-4">Agenda de Talleres</h2>
 
-<!-- Mensajes -->
+<!--muestra mensaje dependiendo resultado de la asignacion de tallerista-->
 <?php if (!empty($mensaje)): ?>
     <div class="alert alert-info text-center" role="alert">
         <?= $mensaje ?>
@@ -98,9 +105,10 @@ if (isset($_POST['asignar_tallerista']) && isset($_SESSION['usuario']) && $_SESS
 <?php endif; ?>
 
 
-<!-- FORMULARIO CRUD (solo talleristas) -->
+<!--form CRUD (solo visible si se logue un usuario talleristas)-->
 <?php if (isset($_SESSION['usuario']) && $_SESSION['usuario']['rol'] === 'tallerista'): ?>
     <div class="container mt-4">
+        <!--en caso de que se toque el boton editar-->
         <?php if ($editando): ?>
             <h3>Editar entrada de agenda</h3>
             <form method="post" class="form-group">
@@ -142,6 +150,7 @@ if (isset($_POST['asignar_tallerista']) && isset($_SESSION['usuario']) && $_SESS
                 <a href="index.php" class="btn btn-secondary">Cancelar</a>
             </form>
         <?php else: ?>
+            <!--vista default para agregar talleres nuevos-->
             <h3>Agregar nuevo taller</h3>
             <form method="post" class="form-group">
                 <div class="form-group">
@@ -179,7 +188,7 @@ if (isset($_POST['asignar_tallerista']) && isset($_SESSION['usuario']) && $_SESS
 <?php endif; ?>
 
 
-<!-- LISTADO VISIBLE PARA TODOS -->
+<!--listado de talleres agendados visible para todos sin necesidad de loguearse-->
 <h3 class="mt-4">Listado de talleres agendados</h3>
 <div class="table-responsive">
     <table class="table table-striped table-bordered">
@@ -208,6 +217,7 @@ if (isset($_POST['asignar_tallerista']) && isset($_SESSION['usuario']) && $_SESS
                         echo empty($asignados) ? "Ninguno" : implode(", ", $asignados);
                         ?>
                     </td>
+                    <!--muestra la columna de acciones en caso de estar logueado como tallerista-->
                     <?php if (isset($_SESSION['usuario']) && $_SESSION['usuario']['rol'] === 'tallerista'): ?>
                         <td>
                             <form method="post" class="d-inline">
