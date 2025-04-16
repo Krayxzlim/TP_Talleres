@@ -3,28 +3,27 @@ session_start();
 include("includes/header.php");
 include("includes/nav.php");
 
-// carga las visitas de agenda en caso de que haya y las muyestra en "listado de talleres agendados"
+//si existe agenda, usuarios y colegios los lee y convierte en array asociativo sino usa arrays vacios
 $archivo = "data/agenda.json";
 $agenda = file_exists($archivo) ? json_decode(file_get_contents($archivo), true) : [];
 
-// carga los colegios en caso de que haya para mostrar en el desplegable
 $colegios_json = "data/colegios.json";
 $colegios_lista = file_exists($colegios_json) ? json_decode(file_get_contents($colegios_json), true) : [];
 
-// array de talleres que aparecen en el desplegable para asignar a cada visita
+//array de talleres que aparecen en el desplegable para asignar a cada visita
 $talleres_opciones = [
     "Creatividad Digital",
     "Cuidado del Entorno",
     "Ciencia en Acción"
 ];
 
-// carga los usuarios que haya registrados y filtra los que tengan rol tallerista para mostrar en el desplegable de "acciones" para asignar a cada visita
-// (acordate de crear acciones para usuarios administrador!)
+//(acordate de crear acciones para usuarios administrador!)
 $usuarios_file = "data/usuarios_registrados.json";
 $usuarios_all = file_exists($usuarios_file) ? json_decode(file_get_contents($usuarios_file), true) : [];
+//fn flecha para filtrar solo los talleristas para crear un nuevo array
 $talleristas_disponibles = array_filter($usuarios_all, fn($u) => $u['rol'] === 'tallerista');
 
-// controles (notificacion/bool para edicion de taller/identifica el taller en edicion)
+// controles (notificacion/bool para edicion/guarda id de taller en edicion)
 $mensaje = "";
 $editando = false;
 $edit_id = -1;
@@ -32,7 +31,7 @@ $edit_id = -1;
 
 // CRUD
 // crea
-if (isset($_POST['agregar']) && isset($_SESSION['usuario']) && $_SESSION['usuario']['rol'] === 'tallerista') {
+if (isset($_POST['agregar'])) {
     $nuevo = [
         "colegio" => $_POST["colegio"],
         "taller" => $_POST["taller"],
@@ -45,14 +44,14 @@ if (isset($_POST['agregar']) && isset($_SESSION['usuario']) && $_SESSION['usuari
     $mensaje = "Taller agendado correctamente.";
 }
 
-// flagea para actualizar
-if (isset($_POST['editar']) && isset($_SESSION['usuario']) && $_SESSION['usuario']['rol'] === 'tallerista') {
+// flagea para editar usa como id el lugar del array
+if (isset($_POST['editar'])) {
     $edit_id = $_POST['editar'];
     $editando = true;
 }
 
-// guarda actualizacion
-if (isset($_POST['guardar_edicion']) && isset($_SESSION['usuario']) && $_SESSION['usuario']['rol'] === 'tallerista') {
+// guarda edicion en base al id flageado antes
+if (isset($_POST['guardar_edicion'])) {
     $id = $_POST['id'];
     $agenda[$id]["colegio"] = $_POST["colegio"];
     $agenda[$id]["taller"] = $_POST["taller"];
@@ -63,8 +62,8 @@ if (isset($_POST['guardar_edicion']) && isset($_SESSION['usuario']) && $_SESSION
     $editando = false;
 }
 
-// borra
-if (isset($_POST['eliminar']) && isset($_SESSION['usuario']) && $_SESSION['usuario']['rol'] === 'tallerista') {
+// borra tomando como id el lugar en el array de agenda y reorganiza el array
+if (isset($_POST['eliminar'])) {
     unset($agenda[$_POST['eliminar']]);
     $agenda = array_values($agenda);
     file_put_contents($archivo, json_encode($agenda, JSON_PRETTY_PRINT));
@@ -73,7 +72,7 @@ if (isset($_POST['eliminar']) && isset($_SESSION['usuario']) && $_SESSION['usuar
 }
 
 // asigna tallerista validando que se puedan asignar solo 2 talleristas distintos
-if (isset($_POST['asignar_tallerista']) && isset($_SESSION['usuario']) && $_SESSION['usuario']['rol'] === 'tallerista') {
+if (isset($_POST['asignar_tallerista'])) {
     $id = $_POST['taller_id'];
     $nuevo_tallerista = $_POST['nuevo_tallerista'];
 
