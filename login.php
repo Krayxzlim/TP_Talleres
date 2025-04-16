@@ -1,7 +1,5 @@
 <?php
 session_start();
-include("includes/header.php");
-include("includes/nav.php");
 
 $mensaje = "";
 
@@ -26,6 +24,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mensaje = "Usuario o contraseña incorrectos";
     }
 }
+
+include("includes/header.php");
+include("includes/nav.php");
 ?>
 
 <div class="container mt-5">
