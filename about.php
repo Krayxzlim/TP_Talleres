@@ -1,5 +1,8 @@
-<?php include("includes/header.php"); ?>
-<?php include("includes/nav.php"); ?>
+<?php
+session_start();
+include("includes/header.php");
+include("includes/nav.php");
+?>
 
 <div class="container mt-5">
     <div class="card shadow-sm">
