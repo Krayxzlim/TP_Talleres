@@ -2,86 +2,80 @@
 session_start();
 include("includes/header.php");
 include("includes/nav.php");
-
-$file = "data/colegios.json";
-$colegios = file_exists($file) ? json_decode(file_get_contents($file), true) : [];
+require_once("includes/funciones.php");
 
 $mensaje = "";
 $editando = false;
-$edit_id = -1;
+$edit_id = null;
+
+$colegios = obtenerColegios();
 
 // Eliminar colegio
 if (isset($_POST['eliminar'])) {
-    $id = $_POST['eliminar'];
-    unset($colegios[$id]);
-    $colegios = array_values($colegios);
-    file_put_contents($file, json_encode($colegios, JSON_PRETTY_PRINT));
-    header("Location: colegios.php");
-    exit;
+    $id = intval($_POST['eliminar']);
+    if (eliminarColegio($id)) {
+        header("Location: colegios.php");
+        exit;
+    } else {
+        $mensaje = "Error al eliminar el colegio.";
+    }
 }
 
 // Iniciar edición
 if (isset($_POST['editar'])) {
-    $edit_id = $_POST['editar'];
+    $edit_id = intval($_POST['editar']);
     $editando = true;
+    $colegio_edit = obtenerColegioPorId($edit_id);
+    if (!$colegio_edit) {
+        $mensaje = "Colegio no encontrado.";
+        $editando = false;
+        $edit_id = null;
+    }
 }
 
 // Guardar edición
 if (isset($_POST['guardar_edicion'])) {
-    $id = $_POST['id'];
-    $nuevo_nombre = trim($_POST["nombre"]);
-    $nueva_direccion = trim($_POST["direccion"]);
+    $id = intval($_POST['id']);
+    $nombre = trim($_POST['nombre']);
+    $direccion = trim($_POST['direccion']);
+    $primario = isset($_POST['primario']) ? 1 : 0;
+    $secundario = isset($_POST['secundario']) ? 1 : 0;
 
-    $duplicado = false;
-    foreach ($colegios as $idx => $c) {
-        if ($idx != $id && strtolower($c["nombre"]) === strtolower($nuevo_nombre)) {
-            $duplicado = true;
-            break;
-        }
-    }
-
-    if ($duplicado) {
+    if (colegioExisteNombre($nombre, $id)) {
         $mensaje = "No se puede guardar. Ya existe otro colegio con ese nombre.";
         $editando = true;
         $edit_id = $id;
+        $colegio_edit = ['nombre'=>$nombre,'direccion'=>$direccion,'primario'=>$primario,'secundario'=>$secundario];
     } else {
-        $colegios[$id] = [
-            "nombre" => $nuevo_nombre,
-            "direccion" => $nueva_direccion,
-            "primario" => isset($_POST["primario"]),
-            "secundario" => isset($_POST["secundario"])
-        ];
-        file_put_contents($file, json_encode($colegios, JSON_PRETTY_PRINT));
-        $mensaje = "Colegio editado correctamente.";
-        $editando = false;
+        if (editarColegio($id, $nombre, $direccion, $primario, $secundario)) {
+            $mensaje = "Colegio editado correctamente.";
+            $editando = false;
+            $edit_id = null;
+            $colegios = obtenerColegios();
+        } else {
+            $mensaje = "Error al editar el colegio.";
+            $editando = true;
+            $edit_id = $id;
+        }
     }
 }
 
 // Agregar colegio
 if (isset($_POST['agregar'])) {
-    $nuevo_nombre = trim($_POST["nombre"]);
-    $nueva_direccion = trim($_POST["direccion"]);
+    $nombre = trim($_POST['nombre']);
+    $direccion = trim($_POST['direccion']);
+    $primario = isset($_POST['primario']) ? 1 : 0;
+    $secundario = isset($_POST['secundario']) ? 1 : 0;
 
-    $duplicado = false;
-    foreach ($colegios as $c) {
-        if (strtolower($c["nombre"]) === strtolower($nuevo_nombre)) {
-            $duplicado = true;
-            break;
-        }
-    }
-
-    if ($duplicado) {
+    if (colegioExisteNombre($nombre)) {
         $mensaje = "Ya existe un colegio con ese nombre.";
     } else {
-        $nuevo = [
-            "nombre" => $nuevo_nombre,
-            "direccion" => $nueva_direccion,
-            "primario" => isset($_POST["primario"]),
-            "secundario" => isset($_POST["secundario"])
-        ];
-        $colegios[] = $nuevo;
-        file_put_contents($file, json_encode($colegios, JSON_PRETTY_PRINT));
-        $mensaje = "Colegio agregado correctamente.";
+        if (agregarColegio($nombre, $direccion, $primario, $secundario)) {
+            $mensaje = "Colegio agregado correctamente.";
+            $colegios = obtenerColegios();
+        } else {
+            $mensaje = "Error al agregar el colegio.";
+        }
     }
 }
 ?>
@@ -96,8 +90,8 @@ if (isset($_POST['agregar'])) {
                     </h3>
 
                     <?php if (!empty($mensaje)): ?>
-                        <div class="alert <?= str_contains($mensaje, 'correctamente') ? 'alert-success' : 'alert-danger' ?>">
-                            <?= $mensaje ?>
+                        <div class="alert <?= strpos($mensaje, 'correctamente') !== false ? 'alert-success' : 'alert-danger' ?>">
+                            <?= htmlspecialchars($mensaje) ?>
                         </div>
                     <?php endif; ?>
 
@@ -109,25 +103,25 @@ if (isset($_POST['agregar'])) {
                         <div class="mb-3">
                             <label class="form-label">Nombre:</label>
                             <input type="text" name="nombre" class="form-control" required
-                                value="<?= $editando ? $colegios[$edit_id]['nombre'] : '' ?>">
+                                value="<?= $editando ? htmlspecialchars($colegio_edit['nombre']) : '' ?>">
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Dirección:</label>
                             <input type="text" name="direccion" class="form-control" required
-                                value="<?= $editando ? $colegios[$edit_id]['direccion'] : '' ?>">
+                                value="<?= $editando ? htmlspecialchars($colegio_edit['direccion']) : '' ?>">
                         </div>
 
                         <div class="form-check mb-2">
-                            <input class="form-check-input" type="checkbox" name="primario"
-                                <?= $editando && $colegios[$edit_id]['primario'] ? 'checked' : '' ?>>
-                            <label class="form-check-label">Primario</label>
+                            <input class="form-check-input" type="checkbox" name="primario" id="primario"
+                                <?= ($editando && $colegio_edit['primario']) ? 'checked' : '' ?>>
+                            <label class="form-check-label" for="primario">Primario</label>
                         </div>
 
                         <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" name="secundario"
-                                <?= $editando && $colegios[$edit_id]['secundario'] ? 'checked' : '' ?>>
-                            <label class="form-check-label">Secundario</label>
+                            <input class="form-check-input" type="checkbox" name="secundario" id="secundario"
+                                <?= ($editando && $colegio_edit['secundario']) ? 'checked' : '' ?>>
+                            <label class="form-check-label" for="secundario">Secundario</label>
                         </div>
 
                         <button type="submit" class="btn btn-primary" name="<?= $editando ? 'guardar_edicion' : 'agregar' ?>">
@@ -141,7 +135,6 @@ if (isset($_POST['agregar'])) {
             </div>
         </div>
 
-        <!-- Tabla de colegios -->
         <div class="col-md-6">
             <div class="card shadow-sm">
                 <div class="card-body">
@@ -160,21 +153,21 @@ if (isset($_POST['agregar'])) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($colegios as $idx => $c): ?>
+                                    <?php foreach ($colegios as $c): ?>
                                         <tr>
-                                            <td><?= $c['nombre'] ?></td>
-                                            <td><?= $c['direccion'] ?></td>
+                                            <td><?= htmlspecialchars($c['nombre']) ?></td>
+                                            <td><?= htmlspecialchars($c['direccion']) ?></td>
                                             <td>
                                                 <?= $c['primario'] ? "Primario " : "" ?>
                                                 <?= $c['secundario'] ? "Secundario" : "" ?>
                                             </td>
                                             <td>
                                                 <form method="post" class="d-inline">
-                                                    <input type="hidden" name="editar" value="<?= $idx ?>">
+                                                    <input type="hidden" name="editar" value="<?= $c['id'] ?>">
                                                     <button type="submit" class="btn btn-sm btn-outline-primary">Editar</button>
                                                 </form>
-                                                <form method="post" class="d-inline">
-                                                    <input type="hidden" name="eliminar" value="<?= $idx ?>">
+                                                <form method="post" class="d-inline" onsubmit="return confirm('¿Seguro que deseas eliminar este colegio?');">
+                                                    <input type="hidden" name="eliminar" value="<?= $c['id'] ?>">
                                                     <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
                                                 </form>
                                             </td>

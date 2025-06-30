@@ -1,27 +1,39 @@
 <?php
 session_start();
+require_once("includes/db.php");  // archivo conexión PDO
 
 $mensaje = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $usuario_input = $_POST['usuario'];
+    // Sanear entrada
+    $usuario_input = trim($_POST['usuario']);
     $password = $_POST['password'];
 
-    $archivo = "data/usuarios_registrados.json";
-    $usuarios_final = [];
-
-    if (file_exists($archivo)) {
-        $usuarios_final = json_decode(file_get_contents($archivo), true);
-    }
-
-    $usuario = array_filter($usuarios_final, fn($u) => $u['usuario'] === $usuario_input && $u['contraseña'] === $password);
-
-    if (!empty($usuario)) {
-        $_SESSION['usuario'] = reset($usuario);
-        header("Location: index.php");
-        exit;
+    if (empty($usuario_input) || empty($password)) {
+        $mensaje = "Por favor completa todos los campos.";
     } else {
-        $mensaje = "Usuario o contraseña incorrectos";
+        try {
+            $pdo = conectarDB();
+
+            // Buscar usuario por nombre
+            $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE usuario = ?");
+            $stmt->execute([$usuario_input]);
+            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($usuario && password_verify($password, $usuario['contraseña'])) {
+                // Contraseña correcta, guardar sesión
+                unset($usuario['contraseña']); // por seguridad, no guardar pass en sesión
+                $_SESSION['usuario'] = $usuario;
+                header("Location: index.php");
+                exit;
+            } else {
+                $mensaje = "Usuario o contraseña incorrectos.";
+            }
+        } catch (PDOException $e) {
+            // Redirigir a página de error si falla conexión DB
+            header("Location: error.php");
+            exit;
+        }
     }
 }
 
@@ -36,7 +48,7 @@ include("includes/nav.php");
         <h2 class="text-center mb-4">Iniciar Sesión</h2>
 
         <?php if (!empty($mensaje)): ?>
-          <div class="alert alert-danger"><?= $mensaje ?></div>
+          <div class="alert alert-danger"><?= htmlspecialchars($mensaje) ?></div>
         <?php endif; ?>
 
         <div class="mb-3">

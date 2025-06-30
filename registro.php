@@ -1,38 +1,37 @@
 <?php
 include("includes/header.php");
 include("includes/nav.php");
+require_once("includes/db.php");
 
 $mensaje = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nuevo_usuario = [
-        "usuario" => $_POST["usuario"],
-        "correo" => $_POST["correo"],
-        "contraseña" => $_POST["password"],
-        "rol" => "tallerista"
-    ];
+    $usuario = trim($_POST["usuario"]);
+    $correo = filter_var($_POST["correo"], FILTER_SANITIZE_EMAIL);
+    $password = $_POST["password"];
+    $rol = "tallerista";
 
-    $file = "data/usuarios_registrados.json";
-    $usuarios_actuales = [];
-
-    if (file_exists($file)) {
-        $usuarios_actuales = json_decode(file_get_contents($file), true);
-    }
-
-    $existe = false;
-    foreach ($usuarios_actuales as $u) {
-        if ($u['usuario'] === $nuevo_usuario['usuario']) {
-            $existe = true;
-            break;
-        }
-    }
-
-    if ($existe) {
-        $mensaje = '<div class="alert alert-danger">El usuario ya existe.</div>';
+    if (empty($usuario) || !filter_var($correo, FILTER_VALIDATE_EMAIL) || strlen($password) < 4) {
+        $mensaje = '<div class="alert alert-danger">Datos inválidos.</div>';
     } else {
-        $usuarios_actuales[] = $nuevo_usuario;
-        file_put_contents($file, json_encode($usuarios_actuales, JSON_PRETTY_PRINT));
-        $mensaje = '<div class="alert alert-success">Usuario registrado exitosamente.</div>';
+        try {
+            $pdo = conectarDB();
+
+            // Verificar si ya existe el usuario
+            $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE usuario = ?");
+            $stmt->execute([$usuario]);
+
+            if ($stmt->rowCount() > 0) {
+                $mensaje = '<div class="alert alert-danger">El usuario ya existe.</div>';
+            } else {
+                $hash = password_hash($password, PASSWORD_DEFAULT);
+                $stmt = $pdo->prepare("INSERT INTO usuarios (usuario, correo, contraseña, rol) VALUES (?, ?, ?, ?)");
+                $stmt->execute([$usuario, $correo, $hash, $rol]);
+                $mensaje = '<div class="alert alert-success">Usuario registrado exitosamente.</div>';
+            }
+        } catch (PDOException $e) {
+            $mensaje = '<div class="alert alert-danger">Error al registrar. Intente más tarde.</div>';
+        }
     }
 }
 ?>
@@ -40,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <div class="container mt-5">
   <div class="row justify-content-center">
     <div class="col-md-6 col-lg-5">
-      <form method="post" action="#" class="card p-4 shadow-sm">
+      <form method="post" class="card p-4 shadow-sm">
         <h2 class="text-center mb-4">Registro de Usuario</h2>
 
         <?= $mensaje ?>

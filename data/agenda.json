@@ -40,6 +40,50 @@
         "taller": "Creatividad Digital",
         "fecha": "2025-07-17",
         "hora": "09:00",
+        "talleristas": [
+            "jose"
+        ]
+    },
+    {
+        "colegio": "Escuela Primaria San Mart\u00edn",
+        "taller": "Creatividad Digital",
+        "fecha": "2025-04-24",
+        "hora": "15:08",
+        "talleristas": []
+    },
+    {
+        "colegio": "Colegio Biling\u00fce El Faro",
+        "taller": "Cuidado del Entorno",
+        "fecha": "2025-04-24",
+        "hora": "20:39",
+        "talleristas": [
+            "pepe"
+        ]
+    },
+    {
+        "colegio": "Instituto T\u00e9cnico Jos\u00e9 de San Mart\u00edn",
+        "taller": "Creatividad Digital",
+        "fecha": "2025-04-24",
+        "hora": "21:07",
+        "talleristas": []
+    },
+    {
+        "colegio": "Instituto T\u00e9cnico Jos\u00e9 de San Mart\u00edn",
+        "taller": "Creatividad Digital",
+        "fecha": "2025-04-25",
+        "hora": "21:07",
+        "talleristas": [
+            "sofia",
+            "jose"
+        ]
+    },
+    {
+        "id": "evento_680afd17e902a6.12459704",
+        "colegio": "Colegio Secundario Mariano Moreno",
+        "direccion": "Calle Mitre 789, Rosario",
+        "taller": "Cuidado del Entorno",
+        "fecha": "2025-04-16",
+        "hora": "02:10",
         "talleristas": []
     }
 ]
