@@ -97,6 +97,38 @@
                             container: 'body'
                         });
                     }
+                },
+                editable: true,
+                eventDrop: function(info) {
+                    const evento = info.event;
+
+                    // Datos nuevos
+                    const nuevoDia = evento.startStr.substring(0, 10); // YYYY-MM-DD
+                    const nuevaHora = evento.startStr.substring(11, 16); // HH:MM
+
+                    // Enviá los datos al servidor para actualizar
+                    fetch('includes/actualizar_evento.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            id: evento.id,
+                            fecha: nuevoDia,
+                            hora: nuevaHora
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.ok) {
+                            alert('Error al actualizar evento: ' + data.error);
+                            info.revert();
+                        }
+                    })
+                    .catch(err => {
+                        alert('Fallo en el servidor.');
+                        info.revert();
+                    });
                 }
             });
 
