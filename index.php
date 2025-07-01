@@ -10,7 +10,7 @@ include("includes/nav.php");
 // Obtener datos necesarios
 $agenda = obtenerAgendaCompleta();
 $colegios_lista = obtenerColegios(); // de la tabla colegios
-$talleres_opciones = ["Creatividad Digital", "Cuidado del Entorno", "Ciencia en Acción"];
+$talleres_opciones = obtenerTalleres();
 
 // Obtener todos los usuarios con rol tallerista
 $usuarios_all = obtenerUsuarios(); // función que debes crear en usuarios_db.php
@@ -24,15 +24,15 @@ $evento = null; // para guardar evento al editar
 // Crear evento
 if (isset($_POST['agregar'])) {
     $colegio = trim(filter_input(INPUT_POST, 'colegio'));
-    $taller = trim(filter_input(INPUT_POST, 'taller'));
+    $taller_id = intval($_POST['taller_id'] ?? 0);
     $fecha = $_POST['fecha'];
     $hora = $_POST['hora'];
 
     // Validaciones básicas
-    if (!$colegio || !$taller || !$fecha || !$hora) {
+    if (!$colegio || !$taller_id || !$fecha || !$hora) {
         $mensaje = "Complete todos los campos.";
     } else {
-        if (agregarEvento($colegio, $taller, $fecha, $hora)) {
+        if (agregarEvento($colegio, $taller_id, $fecha, $hora)) {
             $mensaje = "Taller agendado correctamente.";
             $agenda = obtenerAgendaCompleta();
         } else {
@@ -56,16 +56,16 @@ if (isset($_POST['editar'])) {
 if (isset($_POST['guardar_edicion'])) {
     $id = intval($_POST['id']);
     $colegio = trim(filter_input(INPUT_POST, 'colegio'));
-    $taller = trim(filter_input(INPUT_POST, 'taller'));
+    $taller_id = intval($_POST['taller_id'] ?? 0);
     $fecha = $_POST['fecha'];
     $hora = $_POST['hora'];
 
-    if (!$colegio || !$taller || !$fecha || !$hora) {
+    if (!$colegio || !$taller_id || !$fecha || !$hora) {
         $mensaje = "Complete todos los campos.";
         $editando = true;
         $evento = obtenerEventoPorId($id);
     } else {
-        if (editarEvento($id, $colegio, $taller, $fecha, $hora)) {
+        if (editarEvento($id, $colegio, $taller_id, $fecha, $hora)) {
             $mensaje = "Taller editado correctamente.";
             $agenda = obtenerAgendaCompleta();
             $editando = false;
@@ -134,12 +134,10 @@ if (isset($_POST['asignar_tallerista'])) {
 
                 <div class="form-group">
                     <label for="taller">Taller:</label>
-                    <select name="taller" class="form-control" required>
-                        <?php foreach ($talleres_opciones as $taller): ?>
-                            <option value="<?= htmlspecialchars($taller) ?>" <?= (($evento['taller'] ?? '') === $taller) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($taller) ?>
-                            </option>
-                        <?php endforeach; ?>
+                    <select name="taller_id" id="taller" class="form-select" required>
+                      <?php foreach ($talleres_opciones as $taller): ?>
+                        <option value="<?= $taller['id'] ?>"><?= htmlspecialchars($taller['nombre']) ?></option>
+                      <?php endforeach; ?>
                     </select>
                 </div>
 
@@ -172,10 +170,10 @@ if (isset($_POST['asignar_tallerista'])) {
 
                 <div class="form-group">
                     <label for="taller">Taller:</label>
-                    <select name="taller" class="form-control" required>
-                        <?php foreach ($talleres_opciones as $taller): ?>
-                            <option value="<?= htmlspecialchars($taller) ?>"><?= htmlspecialchars($taller) ?></option>
-                        <?php endforeach; ?>
+                    <select name="taller_id" id="taller" class="form-select" required>
+                      <?php foreach ($talleres_opciones as $taller): ?>
+                        <option value="<?= $taller['id'] ?>"><?= htmlspecialchars($taller['nombre']) ?></option>
+                      <?php endforeach; ?>
                     </select>
                 </div>
 
@@ -216,7 +214,7 @@ if (isset($_POST['asignar_tallerista'])) {
             <?php foreach ($agenda as $item): ?>
                 <tr>
                     <td><?= htmlspecialchars($item['colegio_nombre'] ?? '') ?></td>
-                    <td><?= htmlspecialchars($item['taller']?? '') ?></td>
+                    <td><?= htmlspecialchars($item['taller_nombre'] ?? '') ?></td>
                     <td><?= htmlspecialchars($item['fecha']?? '') ?></td>
                     <td><?= htmlspecialchars($item['hora']?? '') ?></td>
                     <td>

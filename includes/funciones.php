@@ -98,7 +98,9 @@ function obtenerColegioPorId($id) {
 function obtenerAgendaCompleta() {
     try {
         $pdo = conectarDB();
-        $stmt = $pdo->query("SELECT a.*, c.nombre AS colegio_nombre FROM agenda a LEFT JOIN colegios c ON a.colegio_id = c.id ORDER BY a.fecha, a.hora");
+        $stmt = $pdo->query("SELECT a.*, c.nombre AS colegio_nombre, t.nombre AS taller_nombre
+            FROM agenda a LEFT JOIN colegios c ON a.colegio_id = c.id 
+            LEFT JOIN talleres t ON a.taller_id = t.id");
         $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         // Preparar consulta para obtener usuarios por agenda_id
@@ -122,19 +124,29 @@ function obtenerAgendaCompleta() {
         exit;
     }
 }
-function agregarEvento($colegio_id, $taller, $fecha, $hora) {
+function obtenerTalleres() {
     try {
         $pdo = conectarDB();
-        $stmt = $pdo->prepare("INSERT INTO agenda (colegio_id, taller, fecha, hora) VALUES (?, ?, ?, ?)");
-        return $stmt->execute([$colegio_id, $taller, $fecha, $hora]);
+        $stmt = $pdo->query("SELECT id, nombre FROM talleres ORDER BY nombre ASC");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Error en obtenerTalleres: " . $e->getMessage());
+        echo "Error en obtenerTalleres: " . $e->getMessage();
+        exit;
+    }
+}
+
+function agregarEvento($colegio_id, $taller_id, $fecha, $hora) {
+    try {
+        $pdo = conectarDB();
+        $stmt = $pdo->prepare("INSERT INTO agenda (colegio_id, taller_id, fecha, hora) VALUES (?, ?, ?, ?)");
+        return $stmt->execute([$colegio_id, $taller_id, $fecha, $hora]);
     } catch (PDOException $e) {
         error_log("Error en agregarEvento: " . $e->getMessage());
         echo "Error en agregarEvento: " . $e->getMessage();
         exit;
     }
 }
-
-
 function obtenerEventoPorId($id) {
     try {
         $pdo = conectarDB();
@@ -161,11 +173,11 @@ function obtenerEventoPorId($id) {
 }
 
 
-function editarEvento($id, $colegio_id, $taller, $fecha, $hora) {
+function editarEvento($id, $colegio_id, $taller_id, $fecha, $hora) {
     try {
         $pdo = conectarDB();
-        $stmt = $pdo->prepare("UPDATE agenda SET colegio_id = ?, taller = ?, fecha = ?, hora = ? WHERE id = ?");
-        return $stmt->execute([$colegio_id, $taller, $fecha, $hora, $id]);
+        $stmt = $pdo->prepare("UPDATE agenda SET colegio_id = ?, taller_id = ?, fecha = ?, hora = ? WHERE id = ?");
+        return $stmt->execute([$colegio_id, $taller_id, $fecha, $hora, $id]);
     } catch (PDOException $e) {
         error_log("Error en editarEvento: " . $e->getMessage());
         echo "Error en editarEvento: " . $e->getMessage();

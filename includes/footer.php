@@ -14,7 +14,7 @@
             $fechaHoraFin = date('Y-m-d\TH:i', $timestampFin);
 
             return [
-                'title' => $item['taller'] . " - " . $item['colegio'],
+                'title' => $item['taller_nombre'] . " - " . $item['colegio_nombre'],
                 'start' => $fechaHoraInicio,
                 'end' => $fechaHoraFin,
                 'tallerista' => (empty($item['talleristas']) ? 'Ninguno' : implode(', ', $item['talleristas']))
