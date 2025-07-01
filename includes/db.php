@@ -15,9 +15,9 @@ function conectarDB() {
     try {
         return new PDO($dsn, $user, $pass, $options);
     } catch (PDOException $e) {
-    //echo "Error al conectar a la base de datos: ". $e->getMessage();
-    echo "Error al conectar a la base de datos: ";
-    exit;
+        error_log("Error al conectar a la base de datos: " . $e->getMessage()); // log del server
+        header("Location: error_db.php"); // Redirige a pagina error
+        exit;
     }
 }
 ?>
