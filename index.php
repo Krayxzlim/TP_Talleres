@@ -107,7 +107,7 @@ if (isset($_POST['asignar_tallerista'])) {
 ?>
 
 <h2 class="text-center my-4">Agenda de Talleres</h2>
-
+<!-- 
 <?php if (!empty($mensaje)): ?>
     <div class="alert alert-info text-center" role="alert">
         <?= htmlspecialchars($mensaje) ?>
@@ -194,9 +194,9 @@ if (isset($_POST['asignar_tallerista'])) {
 <?php endif; ?>
 
 
-<h3 class="mt-4 text-center">Listado de talleres agendados</h3>
+<h3 class="mt-4 text-center">Listado de talleres agendados</h3> -->
 <div id='calendar'></div>
-<div class="table-responsive">
+<!-- <div class="table-responsive">
     <table class="table table-striped table-bordered">
         <thead>
             <tr>
@@ -254,6 +254,89 @@ if (isset($_POST['asignar_tallerista'])) {
             <?php endforeach; ?>
         </tbody>
     </table>
+</div> -->
+<!-- Modal: Agregar Taller -->
+<div class="modal fade" id="modalAgregarTaller" tabindex="-1" aria-labelledby="modalAgregarTallerLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content text-dark">
+            <form method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalAgregarTallerLabel">Agregar Nuevo Taller</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3 text-start">
+                        <label for="colegio" class="form-label">Colegio</label>
+                        <select name="colegio" class="form-select" required>
+                            <?php foreach ($colegios_lista as $c): ?>
+                                <option value="<?= htmlspecialchars($c['id']) ?>"><?= htmlspecialchars($c['nombre']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="mb-3 text-start">
+                        <label for="taller_id" class="form-label">Taller</label>
+                        <select name="taller_id" class="form-select" required>
+                            <?php foreach ($talleres_opciones as $t): ?>
+                                <option value="<?= $t['id'] ?>"><?= htmlspecialchars($t['nombre']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="mb-3 text-start">
+                        <label for="fecha" class="form-label">Fecha</label>
+                        <input type="date" name="fecha" class="form-control" required>
+                    </div>
+                    <div class="mb-3 text-start">
+                        <label for="hora" class="form-label">Hora</label>
+                        <input type="time" name="hora" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" name="agregar" class="btn btn-primary">Agregar Taller</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
+<!-- Modal: Detalle de Evento -->
+<div class="modal fade" id="modalDetalleEvento" tabindex="-1" aria-labelledby="modalDetalleEventoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalDetalleEventoLabel">Detalle del Taller</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div id="contenidoDetalleEvento"></div>
+
+                <!-- Este formulario se muestra//oculta -->
+                <form method="post" class="mt-3 d-flex gap-2 align-items-end d-none" id="formAsignarTallerista">
+                    <input type="hidden" id="eventoIdDetalle" name="taller_id" value="">
+                    <select name="nuevo_tallerista" class="form-select form-select-sm w-auto" required>
+                        <option value="" selected disabled>Seleccionar tallerista</option>
+                        <?php foreach ($talleristas_disponibles as $u): ?>
+                            <option value="<?= htmlspecialchars($u['usuario']) ?>"><?= htmlspecialchars($u['usuario']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button type="submit" name="asignar_tallerista" class="btn btn-info btn-sm">Asignar</button>
+                </form>
+
+                <!-- Este lo muestra si ya hay 2 -->
+                <p class="text-muted mt-3 d-none" id="mensajeYaDos">Ya hay 2 talleristas asignados para este taller.</p>
+            </div>
+            <div class="modal-footer">
+                <form method="post" class="d-inline">
+                    <input type="hidden" id="eventoIdEditar" name="editar" value="">
+                    <button type="submit" class="btn btn-warning">Editar</button>
+                </form>
+                <form method="post" class="d-inline">
+                    <input type="hidden" id="eventoIdEliminar" name="eliminar" value="">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de eliminar este taller?')">Eliminar</button>
+                </form>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 <?php include("includes/footer.php"); ?>
