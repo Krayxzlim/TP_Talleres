@@ -308,32 +308,40 @@ if (isset($_POST['asignar_tallerista'])) {
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
+                <input type="hidden" id="eventoIdDetalle" name="taller_id" value="">
+                <input type="hidden" id="eventoIdEditar" name="editar" value="">
+                <input type="hidden" id="eventoIdEliminar" name="eliminar" value="">
+
                 <div id="contenidoDetalleEvento"></div>
 
-                <!-- Este formulario se muestra//oculta -->
-                <form method="post" class="mt-3 d-flex gap-2 align-items-end d-none" id="formAsignarTallerista">
-                    <input type="hidden" id="eventoIdDetalle" name="taller_id" value="">
-                    <select name="nuevo_tallerista" class="form-select form-select-sm w-auto" required>
-                        <option value="" selected disabled>Seleccionar tallerista</option>
-                        <?php foreach ($talleristas_disponibles as $u): ?>
-                            <option value="<?= htmlspecialchars($u['usuario']) ?>"><?= htmlspecialchars($u['usuario']) ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                    <button type="submit" name="asignar_tallerista" class="btn btn-info btn-sm">Asignar</button>
-                </form>
+                <?php if (isset($_SESSION['usuario'])): ?>
+                    <!-- Este formulario se muestra//oculta -->
+                    <form method="post" class="mt-3 d-flex gap-2 align-items-end d-none" id="formAsignarTallerista">
+                        <input type="hidden" id="eventoIdDetalle" name="taller_id" value="">
+                        <select name="nuevo_tallerista" class="form-select form-select-sm w-auto" required>
+                            <option value="" selected disabled>Seleccionar tallerista</option>
+                            <?php foreach ($talleristas_disponibles as $u): ?>
+                                <option value="<?= htmlspecialchars($u['usuario']) ?>"><?= htmlspecialchars($u['usuario']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <button type="submit" name="asignar_tallerista" class="btn btn-info btn-sm">Asignar</button>
+                    </form>
 
-                <!-- Este lo muestra si ya hay 2 -->
-                <p class="text-muted mt-3 d-none" id="mensajeYaDos">Ya hay 2 talleristas asignados para este taller.</p>
+                    <!-- Este lo muestra si ya hay 2 -->
+                    <p class="text-muted mt-3 d-none" id="mensajeYaDos">Ya hay 2 talleristas asignados para este taller.</p>
+                <?php endif; ?>
             </div>
             <div class="modal-footer">
-                <form method="post" class="d-inline">
-                    <input type="hidden" id="eventoIdEditar" name="editar" value="">
-                    <button type="submit" class="btn btn-warning">Editar</button>
-                </form>
-                <form method="post" class="d-inline">
-                    <input type="hidden" id="eventoIdEliminar" name="eliminar" value="">
-                    <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de eliminar este taller?')">Eliminar</button>
-                </form>
+                <?php if (isset($_SESSION['usuario'])): ?>
+                    <form method="post" class="d-inline">
+                        <input type="hidden" id="eventoIdEditar" name="editar" value="">
+                        <button type="submit" class="btn btn-warning">Editar</button>
+                    </form>
+                    <form method="post" class="d-inline">
+                        <input type="hidden" id="eventoIdEliminar" name="eliminar" value="">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de eliminar este taller?')">Eliminar</button>
+                    </form>
+                <?php endif; ?>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>

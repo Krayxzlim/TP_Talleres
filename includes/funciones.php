@@ -1,9 +1,5 @@
 <?php
 require_once 'db.php';
-function limpiar($dato) {
-    return htmlspecialchars(trim($dato), ENT_QUOTES, 'UTF-8');
-}
-
 function obtenerUsuarios() {
     try {
         $pdo = conectarDB();
@@ -15,7 +11,6 @@ function obtenerUsuarios() {
         exit;
     }
 }
-
 function obtenerColegios() {
     try {
         $pdo = conectarDB();
@@ -27,7 +22,6 @@ function obtenerColegios() {
         exit;
     }
 }
-
 function colegioExisteNombre($nombre, $exceptoId = null) {
     try {
         $pdo = conectarDB();
@@ -45,7 +39,6 @@ function colegioExisteNombre($nombre, $exceptoId = null) {
         exit;
     }
 }
-
 function agregarColegio($nombre, $direccion, $primario, $secundario) {
     try {
         $pdo = conectarDB();
@@ -57,7 +50,6 @@ function agregarColegio($nombre, $direccion, $primario, $secundario) {
         exit;
     }
 }
-
 function editarColegio($id, $nombre, $direccion, $primario, $secundario) {
     try {
         $pdo = conectarDB();
@@ -69,7 +61,6 @@ function editarColegio($id, $nombre, $direccion, $primario, $secundario) {
         exit;
     }
 }
-
 function eliminarColegio($id) {
     try {
         $pdo = conectarDB();
@@ -81,7 +72,6 @@ function eliminarColegio($id) {
         exit;
     }
 }
-
 function obtenerColegioPorId($id) {
     try {
         $pdo = conectarDB();
@@ -94,7 +84,6 @@ function obtenerColegioPorId($id) {
         exit;
     }
 }
-
 function obtenerAgendaCompleta() {
     try {
         $pdo = conectarDB();
@@ -123,8 +112,7 @@ function obtenerAgendaCompleta() {
         echo "Error en obtenerAgendaCompleta: " . $e->getMessage();
         exit;
     }
-}
-function obtenerTalleres() {
+}function obtenerTalleres() {
     try {
         $pdo = conectarDB();
         $stmt = $pdo->query("SELECT id, nombre FROM talleres ORDER BY nombre ASC");
@@ -135,7 +123,6 @@ function obtenerTalleres() {
         exit;
     }
 }
-
 function agregarEvento($colegio_id, $taller_id, $fecha, $hora) {
     try {
         $pdo = conectarDB();
@@ -146,8 +133,7 @@ function agregarEvento($colegio_id, $taller_id, $fecha, $hora) {
         echo "Error en agregarEvento: " . $e->getMessage();
         exit;
     }
-}
-function obtenerEventoPorId($id) {
+}function obtenerEventoPorId($id) {
     try {
         $pdo = conectarDB();
         $stmt = $pdo->prepare("SELECT * FROM agenda WHERE id = ?");
@@ -171,8 +157,6 @@ function obtenerEventoPorId($id) {
         exit;
     }
 }
-
-
 function editarEvento($id, $colegio_id, $taller_id, $fecha, $hora) {
     try {
         $pdo = conectarDB();
@@ -184,8 +168,6 @@ function editarEvento($id, $colegio_id, $taller_id, $fecha, $hora) {
         exit;
     }
 }
-
-
 function eliminarEvento($id) {
     try {
         $pdo = conectarDB();
@@ -197,7 +179,6 @@ function eliminarEvento($id) {
         exit;
     }
 }
-
 function asignarTallerista($agenda_id, $tallerista_usuario) {
     try {
         $pdo = conectarDB();

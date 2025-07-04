@@ -36,11 +36,12 @@
                 navLinks: true,
                 initialView: 'dayGridMonth',
                 headerToolbar: {
-                    left: 'prev,next today agregarTallerButton',
+                    left: 'prev,next today<?= isset($_SESSION["usuario"]) ? " agregarTallerButton" : "" ?>',
                     center: 'title',
                     right: 'multiMonthYear,dayGridMonth,timeGridWeek,timeGridDay,listWeek'
                 },
                 customButtons: {
+                    <?php if (isset($_SESSION['usuario'])): ?>
                     agregarTallerButton: {
                         text: '➕ Agregar Taller',
                         click: function () {
@@ -48,6 +49,7 @@
                             modal.show();
                         }
                     }
+                    <?php endif; ?>
                 },
                 events: eventos,
                 eventClick: function(info) {
@@ -60,12 +62,6 @@
                         <div class="mb-2 text-start"><strong>Fin:</strong> ${evento.end ? evento.end.toLocaleString() : 'No especificado'}</div>
                         <div class="mb-2 text-start"><strong>Talleristas:</strong> ${evento.extendedProps.tallerista ?? 'Sin descripción'}</div>
                     `;
-
-                    // Pasar el ID del evento a los inputs
-                    document.getElementById('eventoIdDetalle').value = evento.id;
-                    document.getElementById('eventoIdEditar').value = evento.id;
-                    document.getElementById('eventoIdEliminar').value = evento.id;
-
                     // Mostrar o esconder el formulario de asignar tallerista
                     const formAsignar = document.getElementById('formAsignarTallerista');
                     const mensajeYaDos = document.getElementById('mensajeYaDos');
@@ -73,16 +69,20 @@
                     // cantidadAsignados desde evento
                     const cantidadAsignados = evento.extendedProps.cantidadAsignados ?? 0;
 
-                    if (cantidadAsignados < 2) {
-                        formAsignar.classList.remove('d-none');
-                        mensajeYaDos.classList.add('d-none');
-                    } else {
-                        formAsignar.classList.add('d-none');
-                        mensajeYaDos.classList.remove('d-none');
+                    // Solo si existen los elementos (cuando hay sesión)
+                    if (formAsignar && mensajeYaDos) {
+                        if (cantidadAsignados < 2) {
+                            formAsignar.classList.remove('d-none');
+                            mensajeYaDos.classList.add('d-none');
+                        } else {
+                            formAsignar.classList.add('d-none');
+                            mensajeYaDos.classList.remove('d-none');
+                        }
                     }
 
 
                     // Mostrar modal
+                    console.log("Abriendo modal", evento.id);
                     const modal = new bootstrap.Modal(document.getElementById('modalDetalleEvento'));
                     modal.show();
 
