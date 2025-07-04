@@ -24,7 +24,10 @@
             ];
         }, $agenda)), JSON_UNESCAPED_UNICODE) ?>;
     </script>
-
+    <!-- booleano para permitir o no event drop -->
+    <script>
+    const usuarioLogueado = <?= isset($_SESSION['usuario']) ? 'true' : 'false' ?>;
+    </script>
 
     <!-- FullCalendar -->
     <script>
@@ -100,6 +103,11 @@
                 },
                 editable: true,
                 eventDrop: function(info) {
+                    if (!usuarioLogueado) {
+                        alert('Debes estar logueado para modificar eventos.');
+                        info.revert(); // Revierte cambio para que no se actualice la nueva fecha si no se esta logueado
+                        return;
+                    }
                     const evento = info.event;
 
                     // Datos nuevos
