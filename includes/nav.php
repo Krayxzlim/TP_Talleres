@@ -27,6 +27,11 @@
                             <a class="nav-link" href="colegios.php">Gestionar Colegios</a>
                         </li>
                     <?php endif; ?>
+                        <?php if ($_SESSION['usuario']['rol'] === 'admin'): ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="admin_usuarios.php">Admin Usuarios</a>
+                        </li>
+                    <?php endif; ?>
                     <!-- Dropdown de usuario mejorado -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">

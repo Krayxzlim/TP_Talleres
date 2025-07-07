@@ -217,3 +217,23 @@ function asignarTallerista($agenda_id, $tallerista_usuario) {
         return "Error en asignarTallerista: " . $e->getMessage();
     }
 }
+function eliminarUsuarioPorNombre($usuario) {
+    try {
+        $pdo = conectarDB();
+        $stmt = $pdo->prepare("DELETE FROM usuarios WHERE usuario = ?");
+        return $stmt->execute([$usuario]);
+    } catch (PDOException $e) {
+        error_log("Error al eliminar usuario: " . $e->getMessage());
+        return false;
+    }
+}
+function cambiarRolUsuario($usuario, $nuevoRol) {
+    try {
+        $pdo = conectarDB();
+        $stmt = $pdo->prepare("UPDATE usuarios SET rol = ? WHERE usuario = ?");
+        return $stmt->execute([$nuevoRol, $usuario]);
+    } catch (PDOException $e) {
+        error_log("Error al cambiar rol: " . $e->getMessage());
+        return false;
+    }
+}
