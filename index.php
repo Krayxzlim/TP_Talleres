@@ -347,4 +347,25 @@ if (isset($_POST['asignar_tallerista'])) {
         </div>
     </div>
 </div>
+
+<!-- Modal de bienvenida -->
+<?php if (isset($_SESSION['usuario'])): ?>
+<div class="modal fade" id="bienvenidaModal" tabindex="-1" aria-labelledby="bienvenidaLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content text-dark">
+      <div class="modal-header">
+        <h5 class="modal-title" id="bienvenidaLabel">¡Bienvenido/a!</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        Hola <?= htmlspecialchars($_SESSION['usuario']['usuario']) ?>, gracias por ingresar al Portal de Talleres.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Comenzar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<?php endif; ?>
+
 <?php include("includes/footer.php"); ?>

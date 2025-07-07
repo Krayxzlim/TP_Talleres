@@ -4,7 +4,7 @@
     </div>    
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
+    
     <!-- Eventos -->
     <script>
         const eventos = <?= json_encode(array_values(array_map(function($item) {
@@ -138,11 +138,25 @@
                         info.revert();
                     });
                 }
-            });
+                
+            });           
 
             calendar.render();
         });
     </script>
+    
+    <?php if (isset($_SESSION['usuario'])): ?>
+    <script>
+        window.addEventListener('load', function () {
+            const modalElement = document.getElementById('bienvenidaModal');
+            if (modalElement && !sessionStorage.getItem('bienvenidaMostrada')) {
+                const modal = new bootstrap.Modal(modalElement);
+                modal.show();
+                sessionStorage.setItem('bienvenidaMostrada', 'true');
+            }
+        });
+    </script>
+    <?php endif; ?>
 </footer>
 </body>
 </html>

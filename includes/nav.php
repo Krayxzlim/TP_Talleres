@@ -6,7 +6,7 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav ms-auto align-items-center">
                 <li class="nav-item">
                     <a class="nav-link" href="index.php">Inicio</a>
                 </li>
@@ -15,14 +15,44 @@
                 </li>
 
                 <?php if (isset($_SESSION['usuario'])): ?>
+                    <?php
+                        $foto_perfil = "https://www.gravatar.com/avatar?d=mp"; // imagen por defecto
+                        if (!empty($_SESSION['usuario']['foto']) && file_exists("uploads/" . $_SESSION['usuario']['foto'])) {
+                            $foto_perfil = "uploads/" . $_SESSION['usuario']['foto'];
+                        }
+                    ?>
+
                     <?php if ($_SESSION['usuario']['rol'] === 'tallerista'): ?>
                         <li class="nav-item">
                             <a class="nav-link" href="colegios.php">Gestionar Colegios</a>
                         </li>
                     <?php endif; ?>
-                    <li class="nav-item">
-                        <a class="nav-link text-danger" href="logout.php">Cerrar sesión</a>
+                    <!-- Dropdown de usuario mejorado -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="<?= htmlspecialchars($foto_perfil) ?>" alt="Perfil" width="32" height="32" class="rounded-circle me-2 border border-light shadow-sm">
+                            <span class="text-capitalize fw-semibold"><?= htmlspecialchars($_SESSION['usuario']['usuario']) ?></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow rounded-3 border-0" aria-labelledby="userDropdown">
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center gap-2" href="perfil.php">
+                                    <i class="bi bi-person-circle"></i> Mi Perfil
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-danger d-flex align-items-center gap-2" href="#" onclick="logoutConLimpieza()">
+                                    <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+                                </a>
+                            </li>
+                        </ul>
                     </li>
+                    <script>
+                    function logoutConLimpieza() {
+                        sessionStorage.removeItem('bienvenidaMostrada');
+                        window.location.href = 'logout.php';
+                    }
+                    </script>
                 <?php else: ?>
                     <li class="nav-item">
                         <a class="nav-link" href="login.php">Login</a>
