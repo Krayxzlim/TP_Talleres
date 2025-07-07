@@ -29,7 +29,7 @@
                     <?php endif; ?>
                         <?php if ($_SESSION['usuario']['rol'] === 'admin'): ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="admin_usuarios.php">Admin Usuarios</a>
+                            <a class="nav-link" href="admin_usuarios.php">Administrar Usuarios</a>
                         </li>
                     <?php endif; ?>
                     <!-- Dropdown de usuario mejorado -->
