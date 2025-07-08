@@ -171,11 +171,11 @@
                         btnSubmit.textContent = "Guardar Cambios";
                         btnSubmit.name = "guardar_edicion";
 
-                        let inputId = document.querySelector('#modalAgregarTaller input[name="agenda_id"]');
+                        let inputId = document.querySelector('#modalAgregarTaller input[name="id"]');
                         if (!inputId) {
                             inputId = document.createElement('input');
                             inputId.type = 'hidden';
-                            inputId.name = 'agenda_id';
+                            inputId.name = 'id';
                             document.querySelector('#modalAgregarTaller form').appendChild(inputId);
                         }
                         inputId.value = eventoId;
