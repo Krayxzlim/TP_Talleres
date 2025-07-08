@@ -171,14 +171,20 @@ function editarEvento($id, $colegio_id, $taller_id, $fecha, $hora) {
 function eliminarEvento($id) {
     try {
         $pdo = conectarDB();
+
+        // Eliminar de agenda_talleristas primero
+        $stmt = $pdo->prepare("DELETE FROM agenda_talleristas WHERE agenda_id = ?");
+        $stmt->execute([$id]);
+
+        // Luego de agenda
         $stmt = $pdo->prepare("DELETE FROM agenda WHERE id = ?");
         return $stmt->execute([$id]);
     } catch (PDOException $e) {
         error_log("Error en eliminarEvento: " . $e->getMessage());
-        echo "Error en eliminarEvento: " . $e->getMessage();
-        exit;
+        return false;
     }
 }
+
 function asignarTallerista($agenda_id, $tallerista_usuario) {
     try {
         $pdo = conectarDB();

@@ -20,9 +20,11 @@
                 'start' => $fechaHoraInicio,
                 'end' => $fechaHoraFin,
                 'tallerista' => empty($talleristas) ? 'Ninguno' : implode(', ', $talleristas),
-                'cantidadAsignados' => $cantidadAsignados
+                'cantidadAsignados' => $cantidadAsignados,
+                'colegio_id' => $item['colegio_id'],
+                'taller_id' => $item['taller_id']
             ];
-        }, $agenda)), JSON_UNESCAPED_UNICODE) ?>;
+        }, $agenda)), JSON_UNESCAPED_UNICODE) ?>;        
     </script>
     <!-- booleano para permitir o no event drop -->
     <script>
@@ -83,9 +85,8 @@
                         }
                     }
 
-
-                    // Mostrar modal
-                    console.log("Abriendo modal", evento.id);
+                    document.getElementById('eventoIdEditar').value = evento.id;
+                    document.getElementById('eventoIdEliminar').value = evento.id;
                     const modal = new bootstrap.Modal(document.getElementById('modalDetalleEvento'));
                     modal.show();
 
@@ -142,6 +143,57 @@
             });           
 
             calendar.render();
+            const btnEditar = document.getElementById('btnEditarEvento');
+            if (btnEditar) {
+                btnEditar.addEventListener('click', function () {
+                    const eventoId = document.getElementById('eventoIdEditar').value;
+                    const evento = eventos.find(e => e.id == eventoId);
+                    if (!evento) {
+                        console.error("No se encontró evento con ID:", eventoId);
+                        return;
+                    }
+
+                    // Cerrar el modal de detalle
+                    const modalDetalle = bootstrap.Modal.getInstance(document.getElementById('modalDetalleEvento'));
+                    if (modalDetalle) modalDetalle.hide();
+
+                    
+                    setTimeout(() => {
+                        const modalEditar = new bootstrap.Modal(document.getElementById('modalAgregarTaller'));
+                        document.querySelector('#modalAgregarTallerLabel').textContent = "Editar Taller";
+                        document.querySelector('[name="colegio"]').value = evento.colegio_id ?? "";
+                        document.querySelector('[name="taller_id"]').value = evento.taller_id ?? "";
+                        document.querySelector('[name="fecha"]').value = evento.start.substring(0, 10);
+                        document.querySelector('[name="hora"]').value = evento.start.substring(11, 16);
+
+                        const btnSubmit = document.querySelector('#modalAgregarTaller button[type="submit"]');
+                        btnSubmit.textContent = "Guardar Cambios";
+                        btnSubmit.name = "guardar_edicion";
+
+                        let inputId = document.querySelector('#modalAgregarTaller input[name="agenda_id"]');
+                        if (!inputId) {
+                            inputId = document.createElement('input');
+                            inputId.type = 'hidden';
+                            inputId.name = 'agenda_id';
+                            document.querySelector('#modalAgregarTaller form').appendChild(inputId);
+                        }
+                        inputId.value = eventoId;
+
+                        modalEditar.show();
+                    }, 300);
+                });
+            }
+            // Restaurar modal a Agregar
+            document.getElementById('modalAgregarTaller').addEventListener('hidden.bs.modal', function () {
+                document.querySelector('#modalAgregarTallerLabel').textContent = "Agregar Nuevo Taller";
+                const btnSubmit = document.querySelector('#modalAgregarTaller button[type="submit"]');
+                btnSubmit.textContent = "Agregar Taller";
+                btnSubmit.name = "agregar";
+
+                // limpia hidden input
+                const inputId = document.querySelector('#modalAgregarTaller input[name="agenda_id"]');
+                if (inputId) inputId.remove();
+            });
         });
     </script>
     

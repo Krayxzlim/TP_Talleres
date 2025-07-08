@@ -190,7 +190,7 @@ if (isset($_POST['asignar_tallerista'])) {
                 <?php if (isset($_SESSION['usuario'])): ?>
                     <form method="post" class="d-inline">
                         <input type="hidden" id="eventoIdEditar" name="editar" value="">
-                        <button type="submit" class="btn btn-warning">Editar</button>
+                        <button type="button" id="btnEditarEvento" class="btn btn-warning">Editar</button>
                     </form>
                     <form method="post" class="d-inline">
                         <input type="hidden" id="eventoIdEliminar" name="eliminar" value="">
