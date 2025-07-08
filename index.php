@@ -108,7 +108,61 @@ if (isset($_POST['asignar_tallerista'])) {
 
 <h2 class="text-center my-4">Agenda de Talleres</h2>
 
+<?php if (!empty($mensaje)): ?>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const mensaje = <?= json_encode($mensaje) ?>;
+    const modalBody = document.getElementById('mensajeModalBody');
+    const modalHeader = document.querySelector('#mensajeModal .modal-header');
+    const modalTitle = document.getElementById('mensajeModalLabel');
+
+    modalBody.textContent = mensaje;
+
+    modalHeader.classList.remove('bg-danger', 'bg-success', 'text-white');
+
+    const palabrasError = [
+      'error',
+      'ya está asignado',
+      'ya hay 2',
+    ];
+
+    function esError(mensaje) {
+      mensaje = mensaje.toLowerCase();
+      return palabrasError.some(palabra => mensaje.includes(palabra));
+    }
+
+    if (esError(mensaje)) {
+      modalHeader.classList.add('bg-danger', 'text-white');
+      modalTitle.textContent = 'Error';
+    } else {
+      modalHeader.classList.add('bg-success', 'text-white');
+      modalTitle.textContent = 'Confirmado';
+    }
+
+    const mensajeModal = new bootstrap.Modal(document.getElementById('mensajeModal'));
+    mensajeModal.show();
+  });
+</script>
+<?php endif; ?>
+
+
 <div id='calendar'></div>
+
+<!-- Modal para mostrar mensajes -->
+<div class="modal fade" id="mensajeModal" tabindex="-1" aria-labelledby="mensajeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="mensajeModalLabel">Notificación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body" id="mensajeModalBody">
+        <!-- Aquí se inserta el mensaje dinámicamente -->
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <!-- Modal: Agregar Taller -->
 <div class="modal fade" id="modalAgregarTaller" tabindex="-1" aria-labelledby="modalAgregarTallerLabel" aria-hidden="true">
