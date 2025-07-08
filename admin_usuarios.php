@@ -45,6 +45,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <div class="container my-5">
     <h2 class="mb-4">Administración de Usuarios</h2>
+    <?php if (isset($_GET['msg'])): ?>
+        <div class="alert alert-success">
+            <?php
+                if ($_GET['msg'] === 'eliminado') echo "Usuario eliminado correctamente.";
+                elseif ($_GET['msg'] === 'rol') echo "Rol del usuario actualizado.";
+            ?>
+        </div>
+    <?php elseif (isset($_GET['error'])): ?>
+        <div class="alert alert-danger">
+            <?php
+                if ($_GET['error'] === 'eliminar') echo "Hubo un error al eliminar.";
+                elseif ($_GET['error'] === 'rol') echo "No se pudo actualizar el rol.";
+                elseif ($_GET['error'] === 'notfound') echo "Usuario no encontrado.";
+            ?>
+        </div>
+    <?php endif; ?>
     <div class="table-responsive">
         <table class="table table-hover table-bordered align-middle shadow-sm">
             <thead class="table-dark">
@@ -85,13 +101,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p><strong>Rol:</strong> <span id="modalUsuarioRol"></span></p>
       </div>
       <div class="modal-footer d-flex justify-content-between">
-        <form method="POST" action="cambiar_rol.php" class="m-0">
+        <form method="POST" action="includes/cambiar_rol.php" class="m-0">
             <input type="hidden" name="usuario" id="formRolUsuario">
             <button type="submit" class="btn btn-outline-primary">
                 <i class="bi bi-person-gear me-1"></i> Cambiar Rol
             </button>
         </form>
-        <form method="POST" action="eliminar_usuario.php" class="m-0" onsubmit="return confirm('¿Seguro que deseas eliminar este usuario?');">
+        <form method="POST" action="includes/eliminar_usuario.php" class="m-0" onsubmit="return confirm('¿Seguro que deseas eliminar este usuario?');">
             <input type="hidden" name="usuario" id="formEliminarUsuario">
             <button type="submit" class="btn btn-outline-danger">
                 <i class="bi bi-trash me-1"></i> Eliminar
