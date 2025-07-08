@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-07-2025 a las 19:43:12
+-- Tiempo de generación: 08-07-2025 a las 20:01:42
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -40,7 +40,6 @@ CREATE TABLE `agenda` (
 --
 
 INSERT INTO `agenda` (`id`, `colegio_id`, `fecha`, `hora`, `taller_id`) VALUES
-(1, 1, '2025-07-17', '09:03:00', 3),
 (2, 5, '2025-06-06', '14:33:00', 2),
 (3, 8, '2025-05-09', '09:20:00', 2),
 (4, 7, '2025-06-04', '11:20:00', 3),
@@ -48,8 +47,15 @@ INSERT INTO `agenda` (`id`, `colegio_id`, `fecha`, `hora`, `taller_id`) VALUES
 (6, 1, '2025-07-16', '15:08:00', 3),
 (7, 7, '2025-04-24', '20:39:00', 3),
 (8, 6, '2025-04-24', '21:07:00', 1),
-(9, 6, '2025-07-03', '18:07:00', 3),
-(10, 2, '2025-07-17', '02:10:00', 3);
+(10, 2, '2025-07-17', '02:10:00', 3),
+(11, 7, '2025-07-08', '21:28:00', 3),
+(12, 7, '2025-07-04', '14:08:00', 1),
+(13, 7, '2025-07-09', '01:11:00', 3),
+(15, 7, '2025-07-10', '02:10:00', 3),
+(16, 2, '2025-07-02', '12:03:00', 1),
+(21, 7, '2025-07-22', '14:49:00', 3),
+(25, 7, '2025-07-01', '15:04:00', 3),
+(26, 7, '2025-07-11', '14:08:00', 3);
 
 -- --------------------------------------------------------
 
@@ -67,17 +73,23 @@ CREATE TABLE `agenda_talleristas` (
 --
 
 INSERT INTO `agenda_talleristas` (`agenda_id`, `usuario_id`) VALUES
-(1, 1),
-(1, 5),
 (2, 4),
-(2, 7),
 (3, 4),
-(5, 7),
+(5, 1),
+(5, 4),
+(6, 4),
 (7, 2),
-(9, 5),
-(9, 7),
 (10, 1),
-(10, 4);
+(10, 4),
+(11, 4),
+(11, 9),
+(12, 1),
+(12, 9),
+(13, 1),
+(13, 4),
+(16, 1),
+(16, 4),
+(25, 4);
 
 -- --------------------------------------------------------
 
@@ -138,23 +150,24 @@ CREATE TABLE `usuarios` (
   `usuario` varchar(50) NOT NULL,
   `correo` varchar(100) NOT NULL,
   `contraseña` varchar(255) NOT NULL,
-  `rol` enum('tallerista','admin') NOT NULL DEFAULT 'tallerista'
+  `rol` enum('tallerista','admin') NOT NULL DEFAULT 'tallerista',
+  `foto` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `usuario`, `correo`, `contraseña`, `rol`) VALUES
-(1, 'luciano', 'luciano.martin@talleres.com', '$2y$10$oRrLUY935m.KgK6bz6kxb.YO8hUaMrFsYiBrbXXQglz/7AvFTcwWO', 'tallerista'),
-(2, 'pepe', 'pepe.gomez@talleres.com', '$2y$10$1iSZG3h0KZCQ1qSLQe9Dn.JdFdh8Vi2ELHw10cT3OskJx0dIxBRhm', 'tallerista'),
-(3, 'maria', 'maria.fernandez@talleres.com', '$2y$10$jBFiFZeEHmtpbkFkZ.WU0e/NiFXyKaNB2B7jCbD5D/WugP3VDhJcW', 'admin'),
-(4, 'juanperez', 'juan.perez@talleres.com', '$2y$10$LrbwG.2JMrzx6d5TSzJnF.cQygLYOymuhgQrkzWPoKPw0/IQi3b9a', 'tallerista'),
-(5, 'sofia', 'sofia.sanchez@talleres.com', '$2y$10$2wz/64EJCQTnoTW4mPCdx.JfqRXHZTQ6rnEil5DL5JX3DqXQC/toa', 'tallerista'),
-(6, 'ana', 'ana.martinez@talleres.com', '$2y$10$ZWUASTM7sS6loZumVKyFnuLrbTeimuqd0aMLvBW3hj5APMQjvPB9O', 'admin'),
-(7, 'jose', 'jose.romero@talleres.com', '$2y$10$uxMYN6BdTF2qDg2vTYeKF..Wfz4fW9X8yWh09o8v6drxowurEtJkO', 'tallerista'),
-(8, 'lucia', 'lucia.garcia@talleres.com', '$2y$10$JWvKY/hdu74V9Dmg2fnMW.Uudku./l.YDf9KZaeZwh0gmxVFEUapq', 'tallerista'),
-(9, 'luciano2', 'asdsssqq@sda.com', '$2y$10$vq5rtFx2mTB1L2SuwdtsLOyy8zkXn1gXVQJGvRABCdl/JBf5Wf46u', 'tallerista');
+INSERT INTO `usuarios` (`id`, `usuario`, `correo`, `contraseña`, `rol`, `foto`) VALUES
+(1, 'luciano', 'luciano.martin@talleres.com', '$2y$10$oRrLUY935m.KgK6bz6kxb.YO8hUaMrFsYiBrbXXQglz/7AvFTcwWO', 'tallerista', 'perfil_686bdc8cc37775.85736775.png'),
+(2, 'pepe', 'pepe.gomez@talleres.com', '$2y$10$1iSZG3h0KZCQ1qSLQe9Dn.JdFdh8Vi2ELHw10cT3OskJx0dIxBRhm', 'tallerista', NULL),
+(3, 'maria', 'maria.fernandez@talleres.com', '$2y$10$jBFiFZeEHmtpbkFkZ.WU0e/NiFXyKaNB2B7jCbD5D/WugP3VDhJcW', 'admin', NULL),
+(4, 'juanperez', 'juan.perez@talleres.com', '$2y$10$LrbwG.2JMrzx6d5TSzJnF.cQygLYOymuhgQrkzWPoKPw0/IQi3b9a', 'tallerista', NULL),
+(5, 'sofia', 'sofia.sanchez@talleres.com', '$2y$10$2wz/64EJCQTnoTW4mPCdx.JfqRXHZTQ6rnEil5DL5JX3DqXQC/toa', 'tallerista', NULL),
+(6, 'ana', 'ana.martinez@talleres.com', '$2y$10$ZWUASTM7sS6loZumVKyFnuLrbTeimuqd0aMLvBW3hj5APMQjvPB9O', 'admin', NULL),
+(8, 'lucia', 'lucia.garcia@talleres.com', '$2y$10$JWvKY/hdu74V9Dmg2fnMW.Uudku./l.YDf9KZaeZwh0gmxVFEUapq', 'admin', NULL),
+(9, 'luciano2', 'asdsssqq@sda.com', '$2y$10$vq5rtFx2mTB1L2SuwdtsLOyy8zkXn1gXVQJGvRABCdl/JBf5Wf46u', 'tallerista', NULL),
+(10, 'admin', 'admin@talleres.com', '$2y$10$mtMBpcUIMtwFki9zCdcpL.0iY8OmQ4TLNQ2iVkgb0EHCiSjxPn2Wy', 'admin', NULL);
 
 --
 -- Índices para tablas volcadas
@@ -204,7 +217,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `agenda`
 --
 ALTER TABLE `agenda`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT de la tabla `colegios`
@@ -222,7 +235,7 @@ ALTER TABLE `talleres`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Restricciones para tablas volcadas
