@@ -244,6 +244,9 @@ function cambiarRolUsuario($usuario, $nuevoRol) {
     }
 }
 function eliminarTalleristaDeEvento($agenda_id, $usuario_nombre) {
+    if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'admin') {
+        return false; // Bloquear si no es admin
+    }
     try {
         $pdo = conectarDB();
         $stmt = $pdo->prepare("SELECT id FROM usuarios WHERE usuario = ?");
@@ -259,4 +262,5 @@ function eliminarTalleristaDeEvento($agenda_id, $usuario_nombre) {
         return false;
     }
 }
+
 

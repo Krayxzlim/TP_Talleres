@@ -29,7 +29,9 @@
     <!-- booleano para permitir o no event drop -->
     <script>
     const usuarioLogueado = <?= isset($_SESSION['usuario']) ? 'true' : 'false' ?>;
+    const rolUsuario = <?= isset($_SESSION['usuario']) ? json_encode($_SESSION['usuario']['rol']) : 'null' ?>;
     </script>
+
 
     <!-- FullCalendar -->
     <script>
@@ -78,7 +80,7 @@
 
                             li.textContent = nombre;
 
-                            if (usuarioLogueado) {
+                            if (rolUsuario === 'admin') {
                                 const form = document.createElement('form');
                                 form.method = 'post';
                                 form.className = 'd-inline';
