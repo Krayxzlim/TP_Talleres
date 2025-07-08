@@ -67,7 +67,6 @@
                         <div class="mb-2 text-start"><strong>Título:</strong> ${evento.title}</div>
                         <div class="mb-2 text-start"><strong>Inicio:</strong> ${evento.start.toLocaleString()}</div>
                         <div class="mb-2 text-start"><strong>Fin:</strong> ${evento.end ? evento.end.toLocaleString() : 'No especificado'}</div>
-                        <div class="mb-2 text-start"><strong>Talleristas:</strong> ${evento.extendedProps.tallerista ?? 'Sin descripción'}</div>
                     `;
                     // Mostrar lista de talleristas asignados
                     const listaAsignados = document.getElementById('listaTalleristasAsignados');

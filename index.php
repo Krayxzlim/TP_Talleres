@@ -239,13 +239,13 @@ if (isset($_POST['eliminar_tallerista'])) {
 
                 <div id="contenidoDetalleEvento"></div>
 
-                <?php if (isset($_SESSION['usuario'])): ?>
+
                     <!-- Mostrar talleristas asignados -->
                     <div id="talleristasAsignados" class="mt-3">
                         <strong>Talleristas asignados:</strong>
                         <ul class="list-group mt-2" id="listaTalleristasAsignados"></ul>
                     </div>
-
+                <?php if (isset($_SESSION['usuario'])): ?>
                     <!-- Asignar nuevo tallerista -->
                     <form method="post" class="mt-3 d-flex gap-2 align-items-end d-none" id="formAsignarTallerista">
                         <input type="hidden" id="eventoIdDetalle" name="taller_id" value="">
