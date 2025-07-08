@@ -163,8 +163,8 @@ if (isset($_POST['asignar_tallerista'])) {
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-                <input type="hidden" id="eventoIdDetalle" name="taller_id" value="">
-                <input type="hidden" id="eventoIdEditar" name="editar" value="">
+
+
 
                 <div id="contenidoDetalleEvento"></div>
 

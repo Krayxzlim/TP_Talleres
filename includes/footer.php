@@ -87,6 +87,7 @@
 
                     document.getElementById('eventoIdEditar').value = evento.id;
                     document.getElementById('eventoIdEliminar').value = evento.id;
+                    document.getElementById('eventoIdDetalle').value = evento.id;
                     const modal = new bootstrap.Modal(document.getElementById('modalDetalleEvento'));
                     modal.show();
 
