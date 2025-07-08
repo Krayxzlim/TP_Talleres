@@ -116,7 +116,7 @@
                     const formAsignar = document.getElementById('formAsignarTallerista');
                     const mensajeYaDos = document.getElementById('mensajeYaDos');
 
-                    // cantidadAsignados desde evento
+                    // desde evento
                     const cantidadAsignados = evento.extendedProps.cantidadAsignados ?? 0;
 
                     // Solo si existen los elementos (cuando hay sesión)

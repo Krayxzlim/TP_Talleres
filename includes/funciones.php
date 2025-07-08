@@ -104,7 +104,7 @@ function obtenerAgendaCompleta() {
         foreach ($eventos as $evento) {
             $stmt2->execute([$evento['id']]);
             $evento['talleristas'] = $stmt2->fetchAll(PDO::FETCH_COLUMN);
-            $agenda[$evento['id']] = $evento;  // indexado por id para seguridad
+            $agenda[$evento['id']] = $evento;  // indexado por id
         }
         return $agenda;
     } catch (PDOException $e) {

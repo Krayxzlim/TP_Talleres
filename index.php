@@ -235,10 +235,7 @@ if (isset($_POST['eliminar_tallerista'])) {
             </div>
             <div class="modal-body">
 
-
-
                 <div id="contenidoDetalleEvento"></div>
-
 
                     <!-- Mostrar talleristas asignados -->
                     <div id="talleristasAsignados" class="mt-3">

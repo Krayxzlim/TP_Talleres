@@ -13,7 +13,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'admin') {
 // Obtener usuarios
 $usuarios = obtenerUsuarios();
 
-// Acciones: eliminar o cambiar rol
+// Eliminar o cambiar rol
 $mensaje = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </div>
 
-<!-- Modal de usuario -->
+<!-- Modal usr -->
 <div class="modal fade" id="modalUsuario" tabindex="-1" aria-labelledby="modalUsuarioLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content shadow">

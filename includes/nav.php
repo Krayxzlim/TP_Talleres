@@ -32,7 +32,7 @@
                             <a class="nav-link" href="admin_usuarios.php">Administrar Usuarios</a>
                         </li>
                     <?php endif; ?>
-                    <!-- Dropdown de usuario mejorado -->
+                    <!-- Drop de usuario -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <img src="<?= htmlspecialchars($foto_perfil) ?>" alt="Perfil" width="32" height="32" class="rounded-circle me-2 border border-light shadow-sm">
