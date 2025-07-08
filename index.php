@@ -165,7 +165,6 @@ if (isset($_POST['asignar_tallerista'])) {
             <div class="modal-body">
                 <input type="hidden" id="eventoIdDetalle" name="taller_id" value="">
                 <input type="hidden" id="eventoIdEditar" name="editar" value="">
-                <input type="hidden" id="eventoIdEliminar" name="eliminar" value="">
 
                 <div id="contenidoDetalleEvento"></div>
 
