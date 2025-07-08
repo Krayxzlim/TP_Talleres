@@ -19,7 +19,7 @@
                 'title' => $item['taller_nombre'] . " - " . $item['colegio_nombre'],
                 'start' => $fechaHoraInicio,
                 'end' => $fechaHoraFin,
-                'tallerista' => empty($talleristas) ? 'Ninguno' : implode(', ', $talleristas),
+                'tallerista' => $talleristas,
                 'cantidadAsignados' => $cantidadAsignados,
                 'colegio_id' => $item['colegio_id'],
                 'taller_id' => $item['taller_id']
@@ -67,6 +67,50 @@
                         <div class="mb-2 text-start"><strong>Fin:</strong> ${evento.end ? evento.end.toLocaleString() : 'No especificado'}</div>
                         <div class="mb-2 text-start"><strong>Talleristas:</strong> ${evento.extendedProps.tallerista ?? 'Sin descripción'}</div>
                     `;
+                    // Mostrar lista de talleristas asignados
+                    const listaAsignados = document.getElementById('listaTalleristasAsignados');
+                    listaAsignados.innerHTML = '';
+
+                    if (Array.isArray(evento.extendedProps.tallerista)) {
+                        evento.extendedProps.tallerista.forEach(nombre => {
+                            const li = document.createElement('li');
+                            li.className = 'list-group-item d-flex justify-content-between align-items-center';
+
+                            li.textContent = nombre;
+
+                            if (usuarioLogueado) {
+                                const form = document.createElement('form');
+                                form.method = 'post';
+                                form.className = 'd-inline';
+
+                                const inputEvento = document.createElement('input');
+                                inputEvento.type = 'hidden';
+                                inputEvento.name = 'evento_id';
+                                inputEvento.value = evento.id;
+
+                                const inputUsuario = document.createElement('input');
+                                inputUsuario.type = 'hidden';
+                                inputUsuario.name = 'usuario_tallerista';
+                                inputUsuario.value = nombre;
+
+                                const btnEliminar = document.createElement('button');
+                                btnEliminar.className = 'btn btn-sm btn-outline-danger ms-2';
+                                btnEliminar.textContent = 'Eliminar';
+                                btnEliminar.name = 'eliminar_tallerista';
+                                btnEliminar.onclick = () => {
+                                    return confirm(`¿Eliminar a ${nombre} de este taller?`);
+                                };
+
+                                form.appendChild(inputEvento);
+                                form.appendChild(inputUsuario);
+                                form.appendChild(btnEliminar);
+
+                                li.appendChild(form);
+                            }
+
+                            listaAsignados.appendChild(li);
+                        });
+                    }
                     // Mostrar o esconder el formulario de asignar tallerista
                     const formAsignar = document.getElementById('formAsignarTallerista');
                     const mensajeYaDos = document.getElementById('mensajeYaDos');

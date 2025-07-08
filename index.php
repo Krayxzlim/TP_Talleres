@@ -104,6 +104,23 @@ if (isset($_POST['asignar_tallerista'])) {
         }
     }
 }
+// Eliminar tallerista
+if (isset($_POST['eliminar_tallerista'])) {
+    $evento_id = intval($_POST['evento_id']);
+    $usuario_nombre = trim($_POST['usuario_tallerista']);
+
+    if ($evento_id && $usuario_nombre) {
+        if (eliminarTalleristaDeEvento($evento_id, $usuario_nombre)) {
+            $mensaje = "Tallerista eliminado correctamente.";
+            $agenda = obtenerAgendaCompleta();
+        } else {
+            $mensaje = "No se pudo eliminar el tallerista.";
+        }
+    } else {
+        $mensaje = "Datos inválidos para eliminar tallerista.";
+    }
+}
+
 ?>
 
 <h2 class="text-center my-4">Agenda de Talleres</h2>
@@ -223,7 +240,13 @@ if (isset($_POST['asignar_tallerista'])) {
                 <div id="contenidoDetalleEvento"></div>
 
                 <?php if (isset($_SESSION['usuario'])): ?>
-                    <!-- Este formulario se muestra//oculta -->
+                    <!-- Mostrar talleristas asignados -->
+                    <div id="talleristasAsignados" class="mt-3">
+                        <strong>Talleristas asignados:</strong>
+                        <ul class="list-group mt-2" id="listaTalleristasAsignados"></ul>
+                    </div>
+
+                    <!-- Asignar nuevo tallerista -->
                     <form method="post" class="mt-3 d-flex gap-2 align-items-end d-none" id="formAsignarTallerista">
                         <input type="hidden" id="eventoIdDetalle" name="taller_id" value="">
                         <select name="nuevo_tallerista" class="form-select form-select-sm w-auto" required>
@@ -235,7 +258,6 @@ if (isset($_POST['asignar_tallerista'])) {
                         <button type="submit" name="asignar_tallerista" class="btn btn-info btn-sm">Asignar</button>
                     </form>
 
-                    <!-- Este lo muestra si ya hay 2 -->
                     <p class="text-muted mt-3 d-none" id="mensajeYaDos">Ya hay 2 talleristas asignados para este taller.</p>
                 <?php endif; ?>
             </div>

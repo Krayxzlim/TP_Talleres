@@ -243,3 +243,20 @@ function cambiarRolUsuario($usuario, $nuevoRol) {
         return false;
     }
 }
+function eliminarTalleristaDeEvento($agenda_id, $usuario_nombre) {
+    try {
+        $pdo = conectarDB();
+        $stmt = $pdo->prepare("SELECT id FROM usuarios WHERE usuario = ?");
+        $stmt->execute([$usuario_nombre]);
+        $usuario_id = $stmt->fetchColumn();
+
+        if (!$usuario_id) return false;
+
+        $stmt = $pdo->prepare("DELETE FROM agenda_talleristas WHERE agenda_id = ? AND usuario_id = ?");
+        return $stmt->execute([$agenda_id, $usuario_id]);
+    } catch (PDOException $e) {
+        error_log("Error en eliminarTalleristaDeEvento: " . $e->getMessage());
+        return false;
+    }
+}
+
