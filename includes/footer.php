@@ -84,10 +84,16 @@
                             mensajeYaDos.classList.remove('d-none');
                         }
                     }
+                    
+                    const inputEditar = document.getElementById('eventoIdEditar');
+                    if (inputEditar) inputEditar.value = evento.id;
 
-                    document.getElementById('eventoIdEditar').value = evento.id;
-                    document.getElementById('eventoIdEliminar').value = evento.id;
-                    document.getElementById('eventoIdDetalle').value = evento.id;
+                    const inputEliminar = document.getElementById('eventoIdEliminar');
+                    if (inputEliminar) inputEliminar.value = evento.id;
+
+                    const inputDetalle = document.getElementById('eventoIdDetalle');
+                    if (inputDetalle) inputDetalle.value = evento.id;
+
                     const modal = new bootstrap.Modal(document.getElementById('modalDetalleEvento'));
                     modal.show();
 
